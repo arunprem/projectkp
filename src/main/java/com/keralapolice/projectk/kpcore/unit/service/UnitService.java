@@ -90,10 +90,40 @@ public class UnitService {
                     previousUnit.getRgt()});
 
             //update tree
+            unitDoa.queryNameForUpdate("unit.moveunit.updatelft",new Object[]{nodeSize,previousUnit.getRgt()});
+            unitDoa.queryNameForUpdate("unit.moveunit.updatergt",new Object[]{nodeSize,previousUnit.getRgt()});
 
+            // Update parent id
+            unitDoa.queryNameForUpdate("unit.moveunit.updateparentid",new Object[]{unit.getParantId(),unit.getId()});
+
+            //Update tree with new parent id
+            UnitVo currentUnit =  (UnitVo) unitUtilService.getObject("unit.get.unit", new Object[]{unit.getParantId()}, UnitVo.class);
+
+            //update tree for isertion
+            unitDoa.queryNameForUpdate("unit.moveunit.updatelftinsert",new Object[]{nodeSize,currentUnit.getLft()});
+            unitDoa.queryNameForUpdate("unit.moveunit.updatergtinsert",new Object[]{nodeSize,currentUnit.getLft()});
+            //update pluged nodes
+            unitDoa.queryNameForUpdate("unit.moveunit.updateplugednode",new Object[]{currentUnit.getLft(),currentUnit.getLft(),currentUnit.getDepth()});
+
+            status=true;
         }
 
         return  status;
+    }
+
+    public Boolean deleteNode(HttpServletRequest request,int unitId){
+        boolean status = false;
+        UnitVo currentUnit =  (UnitVo) unitUtilService.getObject("unit.get.unit", new Object[]{unitId}, UnitVo.class);
+        if(currentUnit.getId()!=null) {
+            Long nodeSize = Long.valueOf(currentUnit.getRgt()) - Long.valueOf(currentUnit.getLft()) + 1;
+            unitDoa.queryNameForUpdate("unit.delete.node", new Object[]{currentUnit.getLft(),currentUnit.getRgt()});
+
+            //update tree for isertion
+            unitDoa.queryNameForUpdate("unit.delete.lft", new Object[]{nodeSize, currentUnit.getRgt()});
+            unitDoa.queryNameForUpdate("unit.delete.rgt", new Object[]{nodeSize, currentUnit.getRgt()});
+            status=true;
+        }
+        return status;
     }
 
 }
