@@ -113,6 +113,7 @@ public class UnitService {
 
     public Boolean deleteNode(HttpServletRequest request,int unitId){
         boolean status = false;
+
         UnitVo currentUnit =  (UnitVo) unitUtilService.getObject("unit.get.unit", new Object[]{unitId}, UnitVo.class);
         if(currentUnit.getId()!=null) {
             Long nodeSize = Long.valueOf(currentUnit.getRgt()) - Long.valueOf(currentUnit.getLft()) + 1;

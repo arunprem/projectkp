@@ -1,19 +1,32 @@
 package com.keralapolice.projectk.kpcore.unit.vo;
 
+import javax.validation.constraints.NotNull;
+
 public class UnitVo {
 
     private String id;
     private String ncrbId;
+    @NotNull
     private String idUnitType;
+    @NotNull
     private String headRank;
+    @NotNull
     private String unitName;
+    @NotNull
     private String unitShortCode;
+    @NotNull
     private String isSalaryDrawingUnit;
+    @NotNull
     private String policeDistrictId;
+    @NotNull
     private String isOldUnit;
+
     private String lft;
+
     private String rgt;
     private String depth;
+
+    @NotNull
     private String parantId;
     private String status;
 

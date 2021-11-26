@@ -2,13 +2,19 @@ package com.keralapolice.projectk.kpcore.unit.controller;
 
 import com.keralapolice.projectk.admin.rank.service.Rankservice;
 import com.keralapolice.projectk.admin.rank.vo.RankVo;
+import com.keralapolice.projectk.config.exception.ApiRequestException;
+import com.keralapolice.projectk.config.exception.KpValidationException;
 import com.keralapolice.projectk.kpcore.unit.service.UnitService;
 import com.keralapolice.projectk.kpcore.unit.vo.UnitVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 public class UnitController {
@@ -16,10 +22,10 @@ public class UnitController {
     UnitService unitService;
 
     @PostMapping("/addUnitDetails")
-    public String addUnitDetails(HttpServletRequest request, @RequestBody @Valid UnitVo unit){
+    public ResponseEntity<?> addUnitDetails(HttpServletRequest request, @RequestBody @Valid UnitVo unit) throws KpValidationException{
         try {
             unitService.createUnitNode(request,unit);
-            return "added successfully";
+            return new ResponseEntity<String>("Unit Created Successfully", HttpStatus.OK);
         }catch (Exception e)
         {
             throw  e;
@@ -27,22 +33,22 @@ public class UnitController {
     }
 
     @PostMapping("/updateUnit")
-    public String updateUnitParent(HttpServletRequest request,@RequestBody @Valid UnitVo unit){
+    public ResponseEntity<?> updateUnitParent(HttpServletRequest request,@RequestBody @Valid UnitVo unit){
         try {
             unitService.moveUnit(request,unit);
-            return "update successfully";
+            return new ResponseEntity<String>("Unit Updated Successfully", HttpStatus.OK);
         }catch (Exception e){
             throw e;
         }
     }
 
     @PostMapping("/deleteUnit/{unitId}")
-    public String deleteUnit(HttpServletRequest request,@RequestBody @Valid @PathVariable("unitId") int id){
+    public Map<String,Object> deleteUnit(HttpServletRequest request, @RequestBody @Valid @PathVariable("unitId") int id){
         try{
             unitService.deleteNode(request,id);
-            return "delete successfully";
+            return Collections.singletonMap("message", "Deleted susccessfully");
         }catch (Exception e){
-            throw e;
+            throw new ApiRequestException("cannot delete this item");
         }
     }
 
