@@ -26,7 +26,7 @@ public class UnitController {
         }
     }
 
-    @PostMapping("/updateUnitParent")
+    @PostMapping("/updateUnit")
     public String updateUnitParent(HttpServletRequest request,@RequestBody @Valid UnitVo unit){
         try {
             unitService.moveUnit(request,unit);
