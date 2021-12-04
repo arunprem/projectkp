@@ -1,10 +1,10 @@
 package com.keralapolice.projectk.login.vo;
 
-public class LoginResponse {
+public class TokenResponse {
     private boolean success;
     private String token;
 
-    public LoginResponse(boolean success, String token) {
+    public TokenResponse(boolean success, String token) {
         this.success = success;
         this.token = token;
     }

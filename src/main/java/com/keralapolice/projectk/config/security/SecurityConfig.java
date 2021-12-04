@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static com.keralapolice.projectk.config.security.SecurityConstants.SIGN_UP_URLS;
 
@@ -30,6 +31,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {return new TokenAuthenticationFilter();}
+
 
 
     @Override
@@ -62,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                          "/**/*.js"
                 ).permitAll().antMatchers(SIGN_UP_URLS).permitAll().anyRequest().authenticated();
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 }
