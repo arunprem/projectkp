@@ -1,28 +1,18 @@
 package com.keralapolice.projectk.config.exception;
 
 public class InvalidLoginResponse {
-    private String username;
-    private String password;
+    private String authStatus;
+
 
     public InvalidLoginResponse() {
-        this.username = "Invalid User Name";
-        this.password = "Invalid Password ";
+       this.authStatus ="Your are not Authenticated";
     }
 
-
-    public String getUsername() {
-        return username;
+    public String getAuthStatus() {
+        return authStatus;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAuthStatus(String authStatus) {
+        this.authStatus = authStatus;
     }
 }

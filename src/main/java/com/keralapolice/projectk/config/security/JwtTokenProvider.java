@@ -35,16 +35,24 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(SecurityConstants.SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
+
             System.out.println("Invalid Signature");
             throw e;
         } catch (MalformedJwtException e) {
+
             System.out.println("Invalid Token");
+            throw  e;
         } catch (ExpiredJwtException e) {
+
             System.out.println("Token Expired");
+            throw  e;
         } catch (UnsupportedJwtException e) {
+
             System.out.println("Token not supported");
         } catch (IllegalArgumentException e) {
+
             System.out.println("Calims not valid");
+            throw  e;
         }
         return false;
     }
