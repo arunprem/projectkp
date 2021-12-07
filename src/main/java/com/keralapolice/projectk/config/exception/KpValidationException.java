@@ -11,8 +11,8 @@ public class KpValidationException extends Exception {
 
 
 
-    public KpValidationException(String message, Throwable cause, String field, String validation) {
-        super(message, cause);
+    public KpValidationException(String message, String field) {
+
         this.field = field;
         this.validation = validation;
     }

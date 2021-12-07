@@ -1,5 +1,6 @@
 package com.keralapolice.projectk.login.Controller;
 
+import com.keralapolice.projectk.config.exception.KpValidationException;
 import com.keralapolice.projectk.config.security.JwtTokenProvider;
 import com.keralapolice.projectk.login.service.UserService;
 import com.keralapolice.projectk.login.vo.LoginRequest;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 
 @RestController
 public class UserController {
@@ -32,15 +34,19 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(HttpServletRequest request, @RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
-           );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
 
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = jwtTokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new TokenResponse(true,jwt));
+            String jwt = jwtTokenProvider.generateToken(authentication);
+            return ResponseEntity.ok(new TokenResponse(true, jwt));
+        }catch (ValidationException e){
+        throw e;
+        }
     }
 
     @PostMapping("/createUser")

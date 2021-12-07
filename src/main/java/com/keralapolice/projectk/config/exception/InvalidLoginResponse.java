@@ -5,7 +5,7 @@ public class InvalidLoginResponse {
 
 
     public InvalidLoginResponse() {
-       this.authStatus ="Your are not Authenticated";
+       this.authStatus ="Authentication Failed";
     }
 
     public String getAuthStatus() {
