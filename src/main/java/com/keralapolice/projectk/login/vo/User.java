@@ -1,15 +1,21 @@
 package com.keralapolice.projectk.login.vo;
 
+import com.keralapolice.projectk.config.validation.CheckUniqness;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 
 public  class User implements UserDetails {
 
+
     private Long userId;
+
+    @CheckUniqness(message = "must be unique")
     private String username;
+    @NotBlank
     private String password;
     private String name;
 

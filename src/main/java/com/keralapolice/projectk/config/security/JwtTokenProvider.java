@@ -17,12 +17,11 @@ public class JwtTokenProvider {
         User user = (User) authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime() + SecurityConstants.EXPIRATION_TIME);
-        String userId = "1";
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("id", 1L);
-        claims.put("username", "arun");
-        claims.put("fullName", "arunprem");
-        return Jwts.builder().setSubject(userId)
+                Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getUserId());
+        claims.put("username", user.getUsername());
+        claims.put("fullName", user.getName());
+        return Jwts.builder().setSubject(user.getUserId().toString())
                 .setClaims(claims)
                 .setIssuedAt(now).setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET_KEY)
