@@ -49,6 +49,11 @@ public class MySQLBaseDao {
         return kpJdbcTemplate.queryForObject(SQLSelectorWebService.getQuery(queryName)+queryNameDynamicPart, paramValues, Long.class);
     }
 
+	public List<Map<String, Object>> queryNameForList(String query, Object[] paramValues) {
+		return kpJdbcTemplate.queryForList(SQLSelectorWebService.getQuery(query), paramValues);
+	}
+
+
 	public int queryNameForInteger(String queryName) {
         return kpJdbcTemplate.queryForObject(SQLSelectorWebService.getQuery(queryName), Integer.class);
     }

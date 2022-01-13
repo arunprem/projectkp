@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.security.Principal;
 
 @RestController
 public class Rankcontroller {
@@ -30,6 +31,7 @@ public class Rankcontroller {
         @PostMapping("/addPostDetails")
         public String addPostDetails(HttpServletRequest request, @RequestBody @Valid RankVo rankVo){
             try {
+
                 return "added successfully";
             }catch (Exception e)
             {
