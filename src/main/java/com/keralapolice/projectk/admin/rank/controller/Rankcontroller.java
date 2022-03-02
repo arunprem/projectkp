@@ -38,5 +38,18 @@ public class Rankcontroller {
                 throw  e;
             }
         }
+        @PostMapping("/getEncryptedData/{dataString}")
+        @ResponseBody
+        public String checkEncryption(HttpServletRequest request,@PathVariable("dataString") String message) throws Exception {
+           return rankservice.encrypt(message);
+        }
+
+        @PostMapping("/getDecriptData")
+        @ResponseBody
+        public String decriptionCheck(HttpServletRequest request) throws Exception{
+            String message = "testdata";
+            String encryptedString = rankservice.encrypt(message);
+            return rankservice.decrypt(encryptedString);
+        }
 
 }
