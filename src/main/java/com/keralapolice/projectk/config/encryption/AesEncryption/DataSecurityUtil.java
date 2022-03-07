@@ -10,11 +10,13 @@ import org.bouncycastle.operator.OutputEncryptor;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.*;
+import java.util.Base64;
 import java.util.Collection;
 
 public class DataSecurityUtil {
@@ -53,12 +55,22 @@ public class DataSecurityUtil {
         return decryptedData;
     }
 
-//    public X509Certificate convertToX509Certificate(String pem) throws CertificateException, IOException {
-//        StringReader reader = new StringReader(pem);
-//        PemReader pr = new PemReader(reader);
-//        X509Certificate cert = (X509Certificate) pr.readPemObject();
-//        return cert;
-//    }
+    public static X509Certificate convertToX509Cert(String certificateString) throws CertificateException {
+        X509Certificate certificate = null;
+        CertificateFactory cf = null;
+        try {
+            if (certificateString != null && !certificateString.trim().isEmpty()) {
+                certificateString = certificateString.replace("-----BEGIN CERTIFICATE-----\n", "")
+                        .replace("-----END CERTIFICATE-----", ""); // NEED FOR PEM FORMAT CERT STRING
+                byte[] certificateData = Base64.getDecoder().decode(certificateString);
+                cf = CertificateFactory.getInstance("X509");
+                certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateData));
+            }
+        } catch (CertificateException e) {
+            throw new CertificateException(e);
+        }
+        return certificate;
+    }
 
 
 }
