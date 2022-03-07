@@ -1,26 +1,32 @@
 package com.keralapolice.projectk.admin.rank.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keralapolice.projectk.admin.rank.service.Rankservice;
 import com.keralapolice.projectk.admin.rank.vo.RankVo;
+import com.keralapolice.projectk.admin.rank.vo.TestEncryption;
+import com.keralapolice.projectk.config.encryption.CAcertificate.CertificateManager;
+import com.keralapolice.projectk.config.encryption.GenerateEncryptionSecurityService;
+import com.keralapolice.projectk.config.encryption.GeneratePublicPrivateRsaKey;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.URI;
-import java.security.Principal;
+import java.security.*;
+import java.security.cert.CertificateEncodingException;
 
 @RestController
 public class Rankcontroller {
 
     @Autowired
+    GenerateEncryptionSecurityService generateEncryptionSecurityService;
+
+    @Autowired
     Rankservice rankservice;
+
+    @Autowired
+    GeneratePublicPrivateRsaKey generatePublicPrivateRsaKey;
 
         @PostMapping("/getrankcount")
         public Integer tableCount(){
@@ -41,15 +47,31 @@ public class Rankcontroller {
         @PostMapping("/getEncryptedData/{dataString}")
         @ResponseBody
         public String checkEncryption(HttpServletRequest request,@PathVariable("dataString") String message) throws Exception {
-           return rankservice.encrypt(message);
+            RankVo rankVo = new RankVo();
+            rankVo.setRankId("1");
+            rankVo.setCatId("2");
+            rankVo.setStatus("sdfadfadfadsfadf");
+            rankVo.setPostDesc("adfasdfadfasdf");
+            ObjectMapper objectMapper = new ObjectMapper();
+            return generateEncryptionSecurityService.encrypt(request,objectMapper.writeValueAsString(rankVo));
         }
 
         @PostMapping("/getDecriptData")
-        @ResponseBody
-        public String decriptionCheck(HttpServletRequest request) throws Exception{
-            String message = "testdata";
-            String encryptedString = rankservice.encrypt(message);
-            return rankservice.decrypt(encryptedString);
+        public RankVo decriptionCheck(HttpServletRequest request, @RequestBody TestEncryption testEncryption) throws Exception{
+           String output= generateEncryptionSecurityService.decrypt(request,testEncryption.getMessage());
+            ObjectMapper objectMapper = new ObjectMapper();
+           RankVo rankVo = objectMapper.readValue(output,RankVo.class);
+
+            return rankVo;
         }
+
+         @PostMapping("/testCertificate")
+        public void testCertificate() throws CertificateEncodingException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
+            CertificateManager certificateManager = new CertificateManager();
+            certificateManager.GenerateCertificate();
+        }
+
+
+
 
 }
