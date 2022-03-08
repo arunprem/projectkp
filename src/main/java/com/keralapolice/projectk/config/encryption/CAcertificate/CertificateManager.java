@@ -47,7 +47,7 @@ public class CertificateManager {
                 new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping));
         // finally, sign the certificate with the private key of the same KeyPair
         X509Certificate cert = certGen.generate(keyPair.getPrivate(), "BC");
-        System.out.println(formatPrivateKey(keyPair.getPrivate()));
+        //System.out.println(formatPrivateKey(keyPair.getPrivate()));
         String certificate =  formatCrtFileContents(cert);
 
         System.out.println(certificate);
