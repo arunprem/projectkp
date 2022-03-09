@@ -23,6 +23,8 @@ public class CertificateManager {
     public static final String BEGIN_CERT = "-----BEGIN CERTIFICATE-----";
     public static final String END_CERT = "-----END CERTIFICATE-----";
     public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String BEGIN_CERT_PRIVATE="-----BEGIN PRIVATE KEY-----";
+    public static final String END_CERT_PRIVATE="-----END PRIVATE KEY-----";
 
     public void GenerateCertificate()throws CertificateEncodingException, InvalidKeyException, IllegalStateException,
             NoSuchProviderException, NoSuchAlgorithmException, SignatureException {
@@ -47,7 +49,7 @@ public class CertificateManager {
                 new ExtendedKeyUsage(KeyPurposeId.id_kp_timeStamping));
         // finally, sign the certificate with the private key of the same KeyPair
         X509Certificate cert = certGen.generate(keyPair.getPrivate(), "BC");
-        //System.out.println(formatPrivateKey(keyPair.getPrivate()));
+        System.out.println(formatCRTPrivateKey(keyPair.getPrivate()));
         String certificate =  formatCrtFileContents(cert);
 
         System.out.println(certificate);
@@ -63,15 +65,16 @@ public class CertificateManager {
         return prettified_cert;
     }
 
-    private static String formatPrivateKey(final PrivateKey privateKey){
+    public static String formatCRTPrivateKey(final PrivateKey privateKey){
         final Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
 
         final byte[] rawCrtText = privateKey.getEncoded();
         final String encodedCertText = new String(encoder.encode(rawCrtText));
 
-        final String prettified_cert = BEGIN_CERT + LINE_SEPARATOR + encodedCertText + LINE_SEPARATOR + END_CERT;
+        final String prettified_cert = BEGIN_CERT_PRIVATE+ LINE_SEPARATOR + encodedCertText + LINE_SEPARATOR + END_CERT_PRIVATE;
         return prettified_cert;
     }
+
 
 
 

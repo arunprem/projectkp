@@ -9,7 +9,9 @@ import com.keralapolice.projectk.config.encryption.AesEncryption.DataSecurityUti
 import com.keralapolice.projectk.config.encryption.CAcertificate.CertificateManager;
 import com.keralapolice.projectk.config.encryption.GenerateEncryptionSecurityService;
 import com.keralapolice.projectk.config.encryption.GeneratePublicPrivateRsaKey;
+import org.apache.poi.ss.formula.functions.Rank;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.util.encoders.UTF8;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,15 +82,25 @@ public class Rankcontroller {
         @PostMapping("/encryptData")
         public String encryptUsingAes() throws CertificateException, IOException, CMSException {
         DataSecurityUtil dataSecurityUtil = new DataSecurityUtil();
-        byte[] data = dataSecurityUtil.encryptData("arunprem adsfadsfadsf".getBytes());
+            RankVo rankVo = new RankVo();
+            rankVo.setRankId("1");
+            rankVo.setCatId("2");
+            rankVo.setStatus("sdfadfadfadsfadf");
+            rankVo.setPostDesc("adfasdfadfasdf");
+            ObjectMapper objectMapper = new ObjectMapper();
+            String datas = objectMapper.writeValueAsString(rankVo);
+        byte[] data = dataSecurityUtil.encryptData(datas.getBytes());
         return dataSecurityUtil.encode(data);
         }
 
     @PostMapping("/decryptUsingAes")
-        public String decryptUsingAes() throws Exception {
+        public RankVo decryptUsingAes() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
             DataSecurityUtil dataSecurityUtil = new DataSecurityUtil();
-            byte [] data = dataSecurityUtil.decryptData(Base64.getMimeDecoder().decode("MIAGCSqGSIb3DQEHA6CAMIACAQAxggI9MIICOQIBADAhMBcxFTATBgNVBAMTDGtlcmFsYXBvbGljZQIGAX9oJAwwMA0GCSqGSIb3DQEBAQUABIICAGsfiE1gwzQ9ZfC094/R1eBBc+oyENSZrHwSj8x8s+boeMAl750+K++4PSVCgcJvhLAp1WgRJvZs3ZJIesfkXtp6aVwHa2DGVfRpQyFwX3a64MpaPFGM02icQ9CGTlJlvrhwIHC7/N5EmczXkidnHd/bKhhWYYOVqeATWeI0T8V0fWh0s4jzj9tsdat7VcETIYYRs23+E4Yh0ugjQRvgRTBqd61CDBS1L6Ff9NDvf4W4Fd5gnLRpdhohDL1koBVTvzH/3PzVnXWN+tJTjW2Zoee9t04MV2G83WZwz2uqg5pkyQpDIpvZgYiJzKM8F8seaOET59Tu1MXYr51zfGXeUZKMJSIIk8lXLJ9x3HlzSbGM3XD3ABCl6DXmtG9xauIBaY5gkhk+IYfda4HPaADFFaUrcja4p2xtPL1a9brSD0JombryFfFPIq3qzOJIEiQbprQ28Y+MJnpkWVwoWLIhvpXPtF2kpyXGpwGqPgp3Qh0rhY+yjvUhjTd2Y5a4Odq1R3DA8G4Qf6gBywpmH979ljmLIjkrj95UtxJ0fGqtS1tbWgM5CmFdE2M5JpIdayLvSXxkBiNZAfL/55SO1nEXJC1aos0kdXHaWLasJwX5zTvJDr8cJ0N9HCyaGyOVbE/fH/qS3/SHfDvLU0gR37nKASXOgByg4IDBmWJ1J277ViscMIAGCSqGSIb3DQEHATAdBglghkgBZQMEASoEEIHdT2zSzzo6E4bhBTviC9mAIP8gbKktEPj9PF4tYahUeqNQNHz7F/QqZ6cx5nqFnghDAAAAAAAAAAA="));
-                return  dataSecurityUtil.encode(data);
+            byte [] data = dataSecurityUtil.decryptData(Base64.getDecoder().decode("MIAGCSqGSIb3DQEHA6CAMIACAQAxggI9MIICOQIBADAhMBcxFTATBgNVBAMTDGtlcmFsYXBvbGljZQIGAX9tcLjvMA0GCSqGSIb3DQEBAQUABIICADMhsTQYX2TLuboSA6/dc9bJe57VaEOVy6c9nkJb4W9gAQ5axahxDLbHMQcS1ni/PX65Y9W0++D0ZUniuCxBXAcQXKhDSP+xKIXfqhwC377Z6n70fsPupRhaqhyak52XqrgBCmWZd0UIlGLqoeeKFK7p2Zt4nZW0cdCs6zkfy1MdZnUjYyezcVF34lHULFN8see2UH7oEqoE2L84cx2gl+yIFwjfseeOt8Vi0a4HYFpTNz1cJTnKM9jAYQCsu8J57UgAL+Y19dVhbXIBFKjgD2JyQEWGED7utLh5ni5dU9KBF7tdhxZ/lBN0gdfhwr9hyfcTIcH+LdGgcHSJeLAjp17Ea8dqX3GyOGC7NiojGwkgyA09YFpa4sS5z9QPLfSxViu9UTyZBF++1ISkDntP/OxrtjucaEgnH3aFm5MAa3/o2qsjxOZLkWBUel4TW/hp8xNnyVY03Xkqt5/G0cBRjvOLcKUPDnjZj/aaKIGhgx2s9NqU26hTWeeFFNyz50xZveLXSEvDXvw1TEjfrDvH6t8kIJLiBtlqsjpzTjsEr9yyc32cruPb4NW1BiK+hCDyzARHVBstXoR8sInH3bGB06BuVZO3l9CN8t8PwRNHj80sDkYapNzQOhXYqcCspJc51h8BINyz5e56zaEBFVnIQA4wK2k/hM+aT/64l5p1vHlSMIAGCSqGSIb3DQEHATAdBglghkgBZQMEASoEEDDVtok7E7/c/g33eBTj7CuAYPcOtwoklH9Vpvdqx1/TSCETejegzo8CDYnsFdF0oHcl7bBTpPRWgF/gT1qJA+z2mWHE3/JGjHMFeql1E1q/LBoYjYxDhKVlTon4xUUwHu/X4uTLB09GwghzysAspGpHyQAAAAAAAAAA"));
+                byte[] decodeBytes= Base64.getDecoder().decode(dataSecurityUtil.encode(data));
+        RankVo rankVo = objectMapper.readValue(decodeBytes,RankVo.class);
+                return rankVo;
         }
 
 
