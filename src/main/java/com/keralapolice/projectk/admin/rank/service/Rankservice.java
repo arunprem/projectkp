@@ -26,8 +26,4 @@ public class Rankservice {
         return count;
     }
 
-
-
-
-
 }
