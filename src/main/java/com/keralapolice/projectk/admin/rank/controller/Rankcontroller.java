@@ -1,8 +1,10 @@
 package com.keralapolice.projectk.admin.rank.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keralapolice.projectk.admin.rank.service.Rankservice;
+import com.keralapolice.projectk.admin.rank.vo.AuthVo;
 import com.keralapolice.projectk.admin.rank.vo.RankVo;
 import com.keralapolice.projectk.admin.rank.vo.TestEncryption;
 import com.keralapolice.projectk.config.encryption.AesEncryption.DataSecurityUtil;
@@ -12,7 +14,9 @@ import com.keralapolice.projectk.config.encryption.GeneratePublicPrivateRsaKey;
 import org.apache.poi.ss.formula.functions.Rank;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.util.encoders.UTF8;
+import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +44,11 @@ public class Rankcontroller {
         public Integer tableCount(){
         return rankservice.rankList();
 
+        }
+
+        @RequestMapping(value = "/getApiDetails",method = RequestMethod.POST,consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+        public Object getApiCall(HttpServletRequest request, AuthVo authVo) throws JsonProcessingException {
+            return rankservice.testRestTemplate(authVo);
         }
 
         @PostMapping("/addPostDetails")
