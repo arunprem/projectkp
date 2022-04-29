@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
@@ -37,7 +38,7 @@ public class PdfGenerateServiceImpl implements PdfGenerateService {
             FileOutputStream fileOutputStream = new FileOutputStream(pdfDirectory + pdfFileName);
             ITextRenderer renderer = new ITextRenderer();
             ITextFontResolver resolver = renderer.getFontResolver();
-            //resolver.addFont("C:/Windows/Fonts/arialuni.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            resolver.addFont("E:\\SimpleSolution\\arialuni.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.setDocumentFromString(htmlContent);
             renderer.layout();
             renderer.createPDF(fileOutputStream, false);
