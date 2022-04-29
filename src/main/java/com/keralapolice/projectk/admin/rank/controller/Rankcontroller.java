@@ -77,7 +77,7 @@ public class Rankcontroller {
         public RankVo decriptionCheck(HttpServletRequest request, @RequestBody TestEncryption testEncryption) throws Exception{
            String output= generateEncryptionSecurityService.decrypt(request,testEncryption.getMessage());
             ObjectMapper objectMapper = new ObjectMapper();
-           RankVo rankVo = objectMapper.readValue(output,RankVo.class);
+            RankVo rankVo = objectMapper.readValue(output,RankVo.class);
 
             return rankVo;
         }
@@ -111,8 +111,5 @@ public class Rankcontroller {
         RankVo rankVo = objectMapper.readValue(decodeBytes,RankVo.class);
                 return rankVo;
         }
-
-
-
 
 }
