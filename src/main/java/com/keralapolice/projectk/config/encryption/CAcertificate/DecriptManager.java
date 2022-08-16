@@ -1,37 +1,29 @@
-package com.keralapolice.projectk.config.encryption.AesEncryption;
+package com.keralapolice.projectk.config.encryption.CAcertificate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.cms.*;
-import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
+import org.bouncycastle.cms.CMSEnvelopedData;
+import org.bouncycastle.cms.KeyTransRecipientInformation;
+import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipient;
-import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.bouncycastle.operator.OutputEncryptor;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.springframework.security.crypto.codec.Utf8;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Security;
-import java.security.cert.*;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Service
-public class DataSecurityUtil {
+public class DecriptManager {
 
-    private static final String PRIVATEKEY_STRING="-----BEGIN PRIVATE KEY-----\n" +
+    String key = "-----BEGIN PRIVATE KEY-----\n" +
             "MIIJQQIBADANBgkqhkiG9w0BAQEFAASCCSswggknAgEAAoICAQC9khmLBNDfVrgh\n" +
             "zs5RAc/TXFymhH+Aq9HxtDD46j/5aOg/d1N3115aaqnWboSrmMuHXX7xU9wWqzQn\n" +
             "iktPj2MMuQ14w6jl9It5BKksZCHNa9NiW14Mx69uWpv3oHNP/cAW8yD0LDtqL59w\n" +
@@ -86,15 +78,13 @@ public class DataSecurityUtil {
 
 
 
-
-
-
     public  byte[] decryptData(byte[] encryptedData) throws Exception {
-            CMSEnvelopedData envelopedData = new CMSEnvelopedData(encryptedData);
-            Collection<RecipientInformation> recipients = envelopedData.getRecipientInfos().getRecipients();
-            KeyTransRecipientInformation recipientInfo = (KeyTransRecipientInformation) recipients.iterator().next();
-            JceKeyTransRecipient recipient = new JceKeyTransEnvelopedRecipient(getPrivateKey(PRIVATEKEY_STRING));
-            return recipientInfo.getContent(recipient);
+        Authentication a = SecurityContextHolder.getContext().getAuthentication();
+        CMSEnvelopedData envelopedData = new CMSEnvelopedData(encryptedData);
+        Collection<RecipientInformation> recipients = envelopedData.getRecipientInfos().getRecipients();
+        KeyTransRecipientInformation recipientInfo = (KeyTransRecipientInformation) recipients.iterator().next();
+        JceKeyTransRecipient recipient = new JceKeyTransEnvelopedRecipient(getPrivateKey(key));
+        return recipientInfo.getContent(recipient);
     }
 
 
@@ -109,17 +99,6 @@ public class DataSecurityUtil {
         PrivateKey pk = converter.getPrivateKey(ukp);
         pemParser.close();
         return pk;
-    }
-
-
-
-
-    public byte[] decode(String data) {
-        return Base64.getDecoder().decode(data);
-    }
-
-    public String encode(byte[] data) {
-        return Base64.getEncoder().encodeToString(data);
     }
 
 
